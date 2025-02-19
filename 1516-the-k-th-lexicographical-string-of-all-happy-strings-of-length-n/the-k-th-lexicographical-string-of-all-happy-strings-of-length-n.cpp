@@ -1,23 +1,26 @@
 class Solution {
 public:
     string getHappyString(int n, int k) {
-        vector<string> happyStrings;
-        auto generateHappyStrings = [&](auto&& self, string current) -> void {
-            if (current.length() == n) {
-                happyStrings.push_back(current);
-                return;
-            }
+        int total = 1 << (n - 1);
+        if (k > 3 * total) return "";
+
+        string result;
+        char last_char = '\0';
+        k--;
+
+        for (int i = 0; i < n; ++i) {
+            int count = 1 << (n - i - 1);
             for (char c : {'a', 'b', 'c'}) {
-                if (current.empty() || current.back() != c) {
-                    self(self, current + c);
+                if (c == last_char) continue;
+                if (k < count) {
+                    result += c;
+                    last_char = c;
+                    break;
                 }
+                k -= count;
             }
-        };
-        generateHappyStrings(generateHappyStrings, "");
-         if (k > happyStrings.size()) {
-            return "";
-        } else {
-            return happyStrings[k - 1];
         }
+
+        return result;
     }
 };
